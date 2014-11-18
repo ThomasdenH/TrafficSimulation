@@ -2,10 +2,12 @@ package com.thomasdh.trafficsimulation.objects;
 
 import com.badlogic.gdx.graphics.Color;
 
+import java.io.Serializable;
+
 /**
  * Created by Thomas on 14-11-2014 in project TrafficSimulation.
  */
-public class FollowTheLeaderCar {
+public class FollowTheLeaderCar implements Serializable {
     float position, speed, acceleration;
     float laneLength;
     int numberOfLanes;
@@ -76,11 +78,11 @@ public class FollowTheLeaderCar {
     }
 
     public double getWidth() {
-        return 0.04;
+        return 0.02;
     }
 
     public double getHeight() {
-        return 0.02;
+        return 0.01;
     }
 
     public double getY() {
@@ -89,10 +91,10 @@ public class FollowTheLeaderCar {
     }
 
     public double getX() {
-        return (position % laneLength) / laneLength * screenWidth - getWidth();
+        return (position % laneLength) / laneLength * screenWidth - getWidth() / 2f;
     }
 
     public Color getColor(float meanSpeed) {
-        return Color.GREEN.lerp(Color.RED, (getSpeed() / meanSpeed) / (getSpeed() / meanSpeed - 1f));
+        return new Color(1f - getSpeed() / meanSpeed, getSpeed() / meanSpeed, 0f, 1f);
     }
 }

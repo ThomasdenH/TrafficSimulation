@@ -5,7 +5,10 @@ package com.thomasdh.trafficsimulation;
  */
 public interface Simulation {
     void setup();
+
     void simulate(float delta);
+
     void draw();
+
     void finish();
 }
