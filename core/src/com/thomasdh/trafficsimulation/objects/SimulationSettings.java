@@ -83,6 +83,16 @@ public class SimulationSettings implements Serializable{
     int simulationsPerSecond;
     float speedMultiplier;
 
+    public float getInitialFluctuation() {
+        return initialFluctuation;
+    }
+
+    public void setInitialFluctuation(float initialFluctuation) {
+        this.initialFluctuation = initialFluctuation;
+    }
+
+    float initialFluctuation;
+
     public float getLaneLength() {
         return roadLength / numberOfLanes;
     }

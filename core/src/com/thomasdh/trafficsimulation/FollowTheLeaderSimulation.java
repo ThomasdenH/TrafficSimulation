@@ -33,6 +33,10 @@ public class FollowTheLeaderSimulation implements Simulation {
 
     boolean running = false;
 
+    public void setSettings(SimulationSettings settings) {
+        this.settings = settings;
+    }
+
     @Override
     public void setup() {
         shapeRenderer = new ShapeRenderer();
@@ -40,15 +44,16 @@ public class FollowTheLeaderSimulation implements Simulation {
         camera.translate(screenWidth / 2f, screenHeight / 2f);
 
         setRunning(false);
-
-        if (Gdx.files.local(progressFilePath).exists()) {
+        if (settings != null) {
+            startSimulation(settings);
+        } else if (Gdx.files.local(progressFilePath).exists()) {
             resumeSimulation();
         } else {
             startSimulation(getDefaultSettings());
         }
     }
 
-    public SimulationSettings getDefaultSettings() {
+    public static SimulationSettings getDefaultSettings() {
         SimulationSettings simulationSettings = new SimulationSettings();
         simulationSettings.setRoadLength(200);
         simulationSettings.setNumberOfCars(100);
@@ -58,6 +63,7 @@ public class FollowTheLeaderSimulation implements Simulation {
         simulationSettings.setLaneWidth(0.03f);
         simulationSettings.setMinDistance(0.1f);
         simulationSettings.setA(1);
+        simulationSettings.setInitialFluctuation(0.1f);
         return simulationSettings;
     }
 
@@ -92,7 +98,7 @@ public class FollowTheLeaderSimulation implements Simulation {
         for (int x = 0; x < settings.getNumberOfCars(); x++) {
             cars.add(new FollowTheLeaderCar(screenWidth, screenHeight, settings.getRoadLength() / settings.getNumberOfCars() * x, 0f, settings.getNumberOfLanes(), settings.getLaneLength()));
         }
-        cars.get(settings.getNumberOfCars() / 2).setPosition(cars.get(settings.getNumberOfCars() / 2).getPosition() + 0.1f);
+        cars.get(settings.getNumberOfCars() / 2).setPosition(cars.get(settings.getNumberOfCars() / 2).getPosition() + settings.getInitialFluctuation());
     }
 
     @Override
