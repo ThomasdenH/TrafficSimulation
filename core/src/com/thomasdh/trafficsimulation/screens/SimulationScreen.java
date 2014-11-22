@@ -1,4 +1,4 @@
-package com.thomasdh.trafficsimulation;
+package com.thomasdh.trafficsimulation.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -11,7 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.thomasdh.trafficsimulation.objects.FollowTheLeaderCar;
+import com.thomasdh.trafficsimulation.TrafficSimulationMain;
+import com.thomasdh.trafficsimulation.simulation.FollowTheLeaderSimulation;
 
 /**
  * Created by Thomas on 19-11-2014 in project TrafficSimulation.
@@ -62,8 +63,8 @@ public class SimulationScreen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
 
-        simulation = new FollowTheLeaderSimulation();
-        if (main.settingsChanged){
+        simulation = new FollowTheLeaderSimulation(main.progressSaver);
+        if (main.settingsChanged) {
             main.settingsChanged = false;
             simulation.setSettings(main.getCurrentSettings());
         }
@@ -73,10 +74,10 @@ public class SimulationScreen implements Screen {
     @Override
     public void render(float delta) {
         if (meanSpeedLabel != null) {
-            meanSpeedLabel.setText("Mean speed: " + String.format("%.2f", ((FollowTheLeaderSimulation) simulation).getMeanSpeed()));
+            meanSpeedLabel.setText("Mean speed: " + Math.round(simulation.getMeanSpeed() * 10000f) / 10000f);
         }
         if (deviantLabel != null) {
-            deviantLabel.setText("Standard deviation: " + String.format("%.2f", ((FollowTheLeaderSimulation) simulation).getStandardDeviation()));
+            deviantLabel.setText("Standard deviation: " + Math.round(simulation.getStandardDeviation() * 10000f) / 10000f);
         }
 
         simulation.simulate(Gdx.graphics.getDeltaTime());
@@ -112,7 +113,7 @@ public class SimulationScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((FollowTheLeaderSimulation) simulation).startSimulation(((FollowTheLeaderSimulation) simulation).getDefaultSettings());
+                simulation.startSimulation(simulation.getSettings() == null ? FollowTheLeaderSimulation.getDefaultSettings() : simulation.getSettings());
             }
         });
 
@@ -122,11 +123,11 @@ public class SimulationScreen implements Screen {
         start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (((FollowTheLeaderSimulation) simulation).running) {
-                    ((FollowTheLeaderSimulation) simulation).setRunning(false);
+                if (simulation.running) {
+                    simulation.setRunning(false);
                     start.setText("Start");
                 } else {
-                    ((FollowTheLeaderSimulation) simulation).setRunning(true);
+                    simulation.setRunning(true);
                     start.setText("Pause");
                 }
             }

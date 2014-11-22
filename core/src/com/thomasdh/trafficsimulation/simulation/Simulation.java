@@ -1,4 +1,4 @@
-package com.thomasdh.trafficsimulation;
+package com.thomasdh.trafficsimulation.simulation;
 
 /**
  * Created by Thomas on 23-9-2014 in project TrafficSimulation.

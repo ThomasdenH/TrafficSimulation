@@ -23,27 +23,6 @@ public class FollowTheLeaderCar implements Serializable {
 
     int round = 0;
 
-    float previousPosition;
-
-    public void setPreviousSpeed(float previousSpeed) {
-        this.previousSpeed = previousSpeed;
-    }
-
-    public void setPreviousPosition(float previousPosition) {
-        this.previousPosition = previousPosition;
-    }
-
-    float previousSpeed;
-
-    public float getPreviousSpeed() {
-        return previousSpeed;
-    }
-
-
-    public float getPreviousPosition() {
-        return previousPosition;
-    }
-
     public float getPosition() {
         return position;
     }
@@ -77,21 +56,29 @@ public class FollowTheLeaderCar implements Serializable {
         this.screenWidth = screenWidth;
     }
 
-    public double getWidth() {
-        return 0.02;
+    public double getRealWidth() {
+        return 4;
     }
 
-    public double getHeight() {
-        return 0.01;
+    public double getRealHeight() {
+        return 2;
+    }
+
+    public double getScreenWidth() {
+        return getRealWidth() / laneLength * screenWidth;
+    }
+
+    public double getScreenHeight(){
+        return getRealHeight() / laneLength * screenWidth;
     }
 
     public double getY() {
         double distancePerLane = screenHeight / (numberOfLanes + 1);
-        return distancePerLane * (1 + Math.floor((position) / laneLength)) - getHeight() / 2f;
+        return distancePerLane * (1 + Math.floor((position) / laneLength)) - getScreenHeight() / 2f;
     }
 
     public double getX() {
-        return (position % laneLength) / laneLength * screenWidth - getWidth() / 2f;
+        return (position % laneLength) / laneLength * screenWidth - getScreenWidth() / 2f;
     }
 
     public Color getColor(float meanSpeed) {

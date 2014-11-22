@@ -3,11 +3,20 @@ package com.thomasdh.trafficsimulation;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.thomasdh.trafficsimulation.objects.SimulationSettings;
+import com.thomasdh.trafficsimulation.screens.SettingsScreen;
+import com.thomasdh.trafficsimulation.screens.SimulationScreen;
+import com.thomasdh.trafficsimulation.storage.ProgressSaver;
 
 public class TrafficSimulationMain extends Game {
 
     Screen simulationScreen;
     SettingsScreen settingsScreen;
+
+    public ProgressSaver progressSaver;
+
+    public TrafficSimulationMain(ProgressSaver progressSaver) {
+        this.progressSaver = progressSaver;
+    }
 
     @Override
     public void create() {
