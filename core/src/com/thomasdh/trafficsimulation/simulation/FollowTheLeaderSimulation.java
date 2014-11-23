@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.thomasdh.trafficsimulation.objects.FollowTheLeaderCar;
+import com.thomasdh.trafficsimulation.objects.Presets;
 import com.thomasdh.trafficsimulation.objects.SimulationSettings;
 import com.thomasdh.trafficsimulation.storage.Progress;
 import com.thomasdh.trafficsimulation.storage.ProgressSaver;
@@ -14,29 +15,30 @@ import java.util.ArrayList;
 /**
  * Created by Thomas on 14-11-2014 in project TrafficSimulation.
  */
-public class FollowTheLeaderSimulation implements Simulation {
+public class FollowTheLeaderSimulation {
 
-    float screenWidth = 1, screenHeight = 1;
+    private final float screenWidth = 1;
+    private final float screenHeight = 1;
 
-    ArrayList<FollowTheLeaderCar> cars;
+    private ArrayList<FollowTheLeaderCar> cars;
 
     public SimulationSettings getSettings() {
         return settings;
     }
 
-    SimulationSettings settings;
+    private SimulationSettings settings;
 
-    ShapeRenderer shapeRenderer;
-    OrthographicCamera camera;
+    private ShapeRenderer shapeRenderer;
+    private OrthographicCamera camera;
 
-    ProgressSaver progressSaver;
+    private final ProgressSaver progressSaver;
 
     public FollowTheLeaderSimulation(ProgressSaver progressSaver) {
         this.progressSaver = progressSaver;
     }
 
-    float meanSpeed;
-    float standardDeviation;
+    private float meanSpeed;
+    private float standardDeviation;
 
     public boolean running = false;
 
@@ -44,7 +46,6 @@ public class FollowTheLeaderSimulation implements Simulation {
         this.settings = settings;
     }
 
-    @Override
     public void setup() {
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera(screenWidth, screenHeight);
@@ -54,37 +55,18 @@ public class FollowTheLeaderSimulation implements Simulation {
         resumeSimulation();
     }
 
-    public static SimulationSettings getDefaultSettings() {
-        SimulationSettings simulationSettings = new SimulationSettings();
-        simulationSettings.setRoadLength(100);
-        simulationSettings.setNumberOfCars(15);
-        simulationSettings.setSimulationsPerSecond(20);
-        simulationSettings.setSpeedMultiplier(0.01f);
-        simulationSettings.setNumberOfLanes(1);
-        simulationSettings.setJamDistanceSZero(2f);
-        simulationSettings.setJamDistanceSOne(0f);
-        simulationSettings.setAccelerationA(0.3f);
-        simulationSettings.setDecelerationB(0.3f);
-        simulationSettings.setMaxSpeed(20);
-        simulationSettings.setT(1.6f);
-        simulationSettings.setDelta(4);
-        simulationSettings.setLaneWidth(3);
-        simulationSettings.setInitialFluctuation(0.1f);
-        return simulationSettings;
-    }
-
     public void setRunning(boolean running) {
         this.running = running;
     }
 
-    public void resumeSimulation() {
+    void resumeSimulation() {
         System.out.println("Resuming simulation");
 
         Progress progress = progressSaver.readProgress();
 
         if (progress == null) {
             if (settings == null) {
-                startSimulation(getDefaultSettings());
+                startSimulation(Presets.defaultPresets[0].getSettings().copy());
             } else {
                 startSimulation(settings);
             }
@@ -107,7 +89,6 @@ public class FollowTheLeaderSimulation implements Simulation {
         cars.get(settings.getNumberOfCars() / 2).setPosition(cars.get(settings.getNumberOfCars() / 2).getPosition() + settings.getInitialFluctuation());
     }
 
-    @Override
     public void simulate(float delta) {
         if (running) {
             meanSpeed = 0f;
@@ -115,7 +96,7 @@ public class FollowTheLeaderSimulation implements Simulation {
 
             for (int x = 0; x < settings.getNumberOfCars(); x++) {
                 FollowTheLeaderCar thisOne = cars.get(x);
-                thisOne.setSpeed(thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime());
+                thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime()));
                 thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * settings.getSimulationTickTime()) % settings.getRoadLength());
                 meanSpeed += thisOne.getSpeed() / settings.getNumberOfCars();
             }
@@ -142,14 +123,13 @@ public class FollowTheLeaderSimulation implements Simulation {
             standardDeviation = (float) Math.sqrt(standardDeviation / settings.getNumberOfCars());
 
             try {
-                Thread.sleep((long) (settings.getTickTime() - Gdx.graphics.getDeltaTime()));
+                Thread.sleep(Math.max(0, (long) (settings.getTickTime() - Gdx.graphics.getDeltaTime())));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    @Override
     public void draw() {
         camera.update();
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -169,7 +149,6 @@ public class FollowTheLeaderSimulation implements Simulation {
         shapeRenderer.end();
     }
 
-    @Override
     public void finish() {
         Progress progress = new Progress();
         progress.cars = cars;
@@ -178,7 +157,7 @@ public class FollowTheLeaderSimulation implements Simulation {
     }
 
     public float getMeanSpeed() {
-        return meanSpeed;
+        return meanSpeed + 0.0000001f;
     }
 
     public float getStandardDeviation() {

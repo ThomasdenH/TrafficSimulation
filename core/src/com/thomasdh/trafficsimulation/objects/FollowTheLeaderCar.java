@@ -8,10 +8,13 @@ import java.io.Serializable;
  * Created by Thomas on 14-11-2014 in project TrafficSimulation.
  */
 public class FollowTheLeaderCar implements Serializable {
-    float position, speed, acceleration;
-    float laneLength;
-    int numberOfLanes;
-    float screenWidth, screenHeight;
+    private float position;
+    private float speed;
+    private float acceleration;
+    private final float laneLength;
+    private final int numberOfLanes;
+    private final float screenWidth;
+    private final float screenHeight;
 
     public int getRound() {
         return round;
@@ -21,7 +24,7 @@ public class FollowTheLeaderCar implements Serializable {
         this.round = round;
     }
 
-    int round = 0;
+    private int round = 0;
 
     public float getPosition() {
         return position;
@@ -60,7 +63,7 @@ public class FollowTheLeaderCar implements Serializable {
         return 4;
     }
 
-    public double getRealHeight() {
+    double getRealHeight() {
         return 2;
     }
 

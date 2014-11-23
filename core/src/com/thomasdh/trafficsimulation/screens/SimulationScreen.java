@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.thomasdh.trafficsimulation.TrafficSimulationMain;
+import com.thomasdh.trafficsimulation.objects.Presets;
 import com.thomasdh.trafficsimulation.simulation.FollowTheLeaderSimulation;
 
 /**
@@ -19,18 +20,19 @@ import com.thomasdh.trafficsimulation.simulation.FollowTheLeaderSimulation;
  */
 public class SimulationScreen implements Screen {
 
-    FollowTheLeaderSimulation simulation;
+    private FollowTheLeaderSimulation simulation;
 
-    Stage stage;
+    private Stage stage;
 
-    float minWidth = 700f, minHeight = 700f;
+    private final float minWidth = 700f;
+    private final float minHeight = 700f;
 
-    Skin uiSkin;
+    private Skin uiSkin;
 
-    Label meanSpeedLabel;
-    Label deviantLabel;
+    private Label meanSpeedLabel;
+    private Label deviantLabel;
 
-    TrafficSimulationMain main;
+    private final TrafficSimulationMain main;
 
     public SimulationScreen(TrafficSimulationMain main) {
         this.main = main;
@@ -64,10 +66,7 @@ public class SimulationScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         simulation = new FollowTheLeaderSimulation(main.progressSaver);
-        if (main.settingsChanged) {
-            main.settingsChanged = false;
-            simulation.setSettings(main.getCurrentSettings());
-        }
+        simulation.setSettings(main.getCurrentSettings());
         simulation.setup();
     }
 
@@ -97,7 +96,7 @@ public class SimulationScreen implements Screen {
     Window generateInfoWindow() {
         final Window iWindow = new Window("Info", uiSkin);
         iWindow.setPosition(10f, 10f);
-        iWindow.setSize(400f, 200f);
+        iWindow.setSize(350f, 120f);
 
         meanSpeedLabel = new Label("Mean speed: ", uiSkin);
         meanSpeedLabel.setPosition(10f, iWindow.getHeight() - 50f);
@@ -113,7 +112,7 @@ public class SimulationScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                simulation.startSimulation(simulation.getSettings() == null ? FollowTheLeaderSimulation.getDefaultSettings() : simulation.getSettings());
+                simulation.startSimulation(main.getCurrentSettings() == null ? Presets.defaultPresets[0].getSettings().copy() : main.getCurrentSettings());
             }
         });
 

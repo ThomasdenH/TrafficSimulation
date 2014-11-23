@@ -6,20 +6,41 @@ import java.io.Serializable;
  * Created by Thomas on 18-11-2014 in project TrafficSimulation.
  */
 public class SimulationSettings implements Serializable {
-    int numberOfCars;
-    int numberOfLanes;
-    float roadLength;
-    float initialFluctuation;
-    float laneWidth;
-    float delta;
-    float maxSpeed;
-    float T;
-    float accelerationA;
-    float decelerationB;
-    int simulationsPerSecond;
-    float speedMultiplier;
-    float jamDistanceSZero;
-    float jamDistanceSOne;
+    private int numberOfCars;
+    private int numberOfLanes;
+    private float roadLength;
+    private float initialFluctuation;
+    private float laneWidth;
+    private float delta;
+    private float maxSpeed;
+    private float T;
+    private float accelerationA;
+    private float decelerationB;
+    private int simulationsPerSecond;
+    private float speedMultiplier;
+    private float jamDistanceSZero;
+    private float jamDistanceSOne;
+
+    public SimulationSettings copy(){
+        SimulationSettings settings = new SimulationSettings();
+        settings.numberOfCars = numberOfCars;
+        settings.numberOfLanes = numberOfLanes;
+        settings.roadLength = roadLength;
+        settings.initialFluctuation = initialFluctuation;
+        settings.laneWidth = laneWidth;
+        settings.delta = delta;
+        settings.maxSpeed = maxSpeed;
+        settings.T = T;
+        settings.accelerationA = accelerationA;
+        settings.decelerationB = decelerationB;
+        settings.simulationsPerSecond = simulationsPerSecond;
+        settings.speedMultiplier = speedMultiplier;
+        settings.jamDistanceSZero = jamDistanceSZero;
+        settings.jamDistanceSOne = jamDistanceSOne;
+        return settings;
+    }
+
+
 
     public void setLaneWidth(float laneWidth) {
         this.laneWidth = laneWidth;

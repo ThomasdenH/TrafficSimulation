@@ -9,10 +9,10 @@ import com.thomasdh.trafficsimulation.storage.ProgressSaver;
 
 public class TrafficSimulationMain extends Game {
 
-    Screen simulationScreen;
-    SettingsScreen settingsScreen;
+    private SimulationScreen simulationScreen;
+    private SettingsScreen settingsScreen;
 
-    public ProgressSaver progressSaver;
+    public final ProgressSaver progressSaver;
 
     public TrafficSimulationMain(ProgressSaver progressSaver) {
         this.progressSaver = progressSaver;
@@ -31,12 +31,9 @@ public class TrafficSimulationMain extends Game {
 
     public void setCurrentSettings(SimulationSettings currentSettings) {
         this.currentSettings = currentSettings;
-        settingsChanged = true;
     }
 
-    SimulationSettings currentSettings;
-
-    public boolean settingsChanged = false;
+    private SimulationSettings currentSettings;
 
     public void setScreen(int screen) {
         if (screen == SCREEN_SIMULATION) {

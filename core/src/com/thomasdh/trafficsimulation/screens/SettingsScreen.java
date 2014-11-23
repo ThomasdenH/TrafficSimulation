@@ -15,8 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.thomasdh.trafficsimulation.TrafficSimulationMain;
+import com.thomasdh.trafficsimulation.objects.Presets;
 import com.thomasdh.trafficsimulation.objects.SimulationSettings;
-import com.thomasdh.trafficsimulation.simulation.FollowTheLeaderSimulation;
 
 import java.util.ArrayList;
 
@@ -25,13 +25,18 @@ import java.util.ArrayList;
  */
 public class SettingsScreen implements Screen {
 
-    TrafficSimulationMain main;
+    private final TrafficSimulationMain main;
 
-    Stage stage;
-    float minWidth = 700f, minHeight = 700f;
-    Skin uiSkin;
+    private Stage stage;
+    private final float minWidth = 700f;
+    private final float minHeight = 700f;
+    private Skin uiSkin;
 
-    SimulationSettings settings;
+    public SimulationSettings getSettings() {
+        return settings;
+    }
+
+    private SimulationSettings settings;
 
     public SettingsScreen(TrafficSimulationMain main) {
         this.main = main;
@@ -54,12 +59,11 @@ public class SettingsScreen implements Screen {
         stage.getViewport().update(width, height);
     }
 
-
     @Override
     public void show() {
 
-        if (settings == null)
-            settings = FollowTheLeaderSimulation.getDefaultSettings();
+        if (getSettings() == null)
+            settings = Presets.defaultPresets[0].getSettings().copy();
 
         callbacks = new ArrayList<ValueUpdateCallback>();
 
@@ -74,133 +78,133 @@ public class SettingsScreen implements Screen {
         addSetting(table, "Number of cars", 0, 1000, 1f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getNumberOfCars();
+                return getSettings().getNumberOfCars();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setNumberOfCars(Math.round(setting));
+                getSettings().setNumberOfCars(Math.round(setting));
             }
         });
         addSetting(table, "Number of lanes", 1, 15, 1, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getNumberOfLanes();
+                return getSettings().getNumberOfLanes();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setNumberOfLanes(Math.round(setting));
+                getSettings().setNumberOfLanes(Math.round(setting));
             }
         });
         addSetting(table, "Road length (m)", 0f, 10000f, 100f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getRoadLength();
+                return getSettings().getRoadLength();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setRoadLength(setting);
+                getSettings().setRoadLength(setting);
             }
         });
         addSetting(table, "Initial fluctuation (m)", 0, 5, 0.05f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getInitialFluctuation();
+                return getSettings().getInitialFluctuation();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setInitialFluctuation(setting);
+                getSettings().setInitialFluctuation(setting);
             }
         });
         addSetting(table, "Maximum acceleration (m/s^2)", 0f, 3f, 0.01f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getAccelerationA();
+                return getSettings().getAccelerationA();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setAccelerationA(setting);
+                getSettings().setAccelerationA(setting);
             }
         });
         addSetting(table, "Desired deceleration (m/s^2)", 0f, 3f, 0.01f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getDecelerationB();
+                return getSettings().getDecelerationB();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setDecelerationB(setting);
+                getSettings().setDecelerationB(setting);
             }
         });
         addSetting(table, "Time headway (s)", 0f, 2.5f, 0.1f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getT();
+                return getSettings().getT();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setT(setting);
+                getSettings().setT(setting);
             }
         });
         addSetting(table, "Acceleration exponent", 0f, 6f, 0.2f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getDelta();
+                return getSettings().getDelta();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setDelta(setting);
+                getSettings().setDelta(setting);
             }
         });
         addSetting(table, "Maximum speed (m/s)", 0f, 200f, 10f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getMaxSpeed();
+                return getSettings().getMaxSpeed();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setMaxSpeed(setting);
+                getSettings().setMaxSpeed(setting);
             }
         });
         addSetting(table, "Simulations per second (/s)", 1, 50, 1, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getSimulationsPerSecond();
+                return getSettings().getSimulationsPerSecond();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setSimulationsPerSecond(Math.round(setting));
+                getSettings().setSimulationsPerSecond(Math.round(setting));
             }
         });
         addSetting(table, "Minimum distance S0 (m)", 0.5f, 10f, 0.5f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getJamDistanceSZero();
+                return getSettings().getJamDistanceSZero();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setJamDistanceSZero(setting);
+                getSettings().setJamDistanceSZero(setting);
             }
         });
         addSetting(table, "Minimum distance S1 (m)", 0f, 100f, 0.5f, callbacks, new SettingObtainer() {
             @Override
             public float getSetting() {
-                return settings.getJamDistanceSOne();
+                return getSettings().getJamDistanceSOne();
             }
 
             @Override
             public void setSetting(float setting) {
-                settings.setJamDistanceSOne(setting);
+                getSettings().setJamDistanceSOne(setting);
             }
         });
 
@@ -209,23 +213,11 @@ public class SettingsScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                main.setCurrentSettings(settings);
+                main.setCurrentSettings(getSettings());
                 main.setScreen(TrafficSimulationMain.SCREEN_SIMULATION);
             }
         });
         table.add(button);
-
-        TextButton button2 = new TextButton("Default", uiSkin);
-        button2.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                setSettings(FollowTheLeaderSimulation.getDefaultSettings());
-                for (ValueUpdateCallback callback : callbacks) {
-                    callback.updateValue();
-                }
-            }
-        });
-        table.add(button2);
 
         TextButton button3 = new TextButton("Cancel", uiSkin);
         button3.addListener(new ClickListener() {
@@ -235,8 +227,14 @@ public class SettingsScreen implements Screen {
             }
         });
         table.add(button3);
+        table.row();
+        for (Presets.Preset preset : Presets.defaultPresets) {
+            table.add(generatePresetButton(preset));
+        }
 
         stage.addActor(table);
+
+
     }
 
     @Override
@@ -259,9 +257,9 @@ public class SettingsScreen implements Screen {
         stage.dispose();
     }
 
-    ArrayList<ValueUpdateCallback> callbacks;
+    private ArrayList<ValueUpdateCallback> callbacks;
 
-    public void addSetting(Table table, final String name, final float min, final float max, final float step, ArrayList<ValueUpdateCallback> callbacks, final SettingObtainer obtainer) {
+    void addSetting(Table table, final String name, final float min, final float max, final float step, ArrayList<ValueUpdateCallback> callbacks, final SettingObtainer obtainer) {
         final Label labelA = new Label(name + ":   " + Math.round(obtainer.getSetting() / step) * step, uiSkin);
         table.add(labelA).width(300f);
         final Slider sliderA = new Slider(min, max, step, false, uiSkin);
@@ -318,5 +316,34 @@ public class SettingsScreen implements Screen {
 
     interface ValueUpdateCallback {
         void updateValue();
+    }
+
+    TextButton generatePresetButton(final Presets.Preset preset) {
+
+        String text = preset.getName() + ":\n\n" +
+                "Number of cars: " + preset.getSettings().getNumberOfCars() + "\n" +
+                "Number of lanes: " + preset.getSettings().getNumberOfLanes() + "\n" +
+                "Road length: " + preset.getSettings().getRoadLength() + "\n" +
+                "Initial fluctuation: " + preset.getSettings().getInitialFluctuation() + "\n" +
+                "Maximum acceleration: " + preset.getSettings().getAccelerationA() + "\n" +
+                "Desired deceleration: " + preset.getSettings().getDecelerationB() + "\n" +
+                "Time headway: " + preset.getSettings().getT() + "\n" +
+                "Acceleration exponent: " + preset.getSettings().getDelta() + "\n" +
+                "Maximum speed: " + preset.getSettings().getMaxSpeed() + "\n" +
+                "Simulations per second: " + preset.getSettings().getSimulationsPerSecond() + "\n" +
+                "Minimum distance S0: " + preset.getSettings().getJamDistanceSZero() + "\n" +
+                "Minimum distance S1: " + preset.getSettings().getJamDistanceSOne() + "\n";
+
+        TextButton textButton = new TextButton(text, uiSkin);
+        textButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setSettings(preset.getSettings().copy());
+                for (ValueUpdateCallback callback : callbacks) {
+                    callback.updateValue();
+                }
+            }
+        });
+        return textButton;
     }
 }

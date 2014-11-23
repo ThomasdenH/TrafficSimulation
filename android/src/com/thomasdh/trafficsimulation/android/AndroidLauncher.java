@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class AndroidLauncher extends AndroidApplication {
 
-    static final String progressFilePath = "progress.txt";
+    private static final String progressFilePath = "progress.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

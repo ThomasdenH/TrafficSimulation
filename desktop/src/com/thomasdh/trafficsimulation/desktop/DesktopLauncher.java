@@ -15,9 +15,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class DesktopLauncher {
+class DesktopLauncher {
 
-    static final String progressFilePath = "progress.txt";
+    private static final String progressFilePath = "progress.txt";
 
 
     public static void main(String[] arg) {
