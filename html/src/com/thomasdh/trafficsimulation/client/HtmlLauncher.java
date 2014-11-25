@@ -3,15 +3,15 @@ package com.thomasdh.trafficsimulation.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.thomasdh.trafficsimulation.TrafficSimulationMain;
 import com.thomasdh.trafficsimulation.storage.Progress;
 import com.thomasdh.trafficsimulation.storage.ProgressSaver;
-import com.thomasdh.trafficsimulation.TrafficSimulationMain;
 
 public class HtmlLauncher extends GwtApplication {
 
     @Override
     public GwtApplicationConfiguration getConfig() {
-        return new GwtApplicationConfiguration(480, 320);
+        return new GwtApplicationConfiguration(700, 700);
     }
 
     @Override
