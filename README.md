@@ -1,10 +1,6 @@
 #TrafficSimulation
 
-This is a simulation program I made with LibGDX.
-
-[Download for desktop (.jar)](https://github.com/ThomasdenH/TrafficSimulation/blob/master/desktop-1.0.jar?raw=true)
-
-[Download for Android (.apk)](https://github.com/ThomasdenH/TrafficSimulation/blob/master/android-release.apk?raw=true)
+This is a simulation program I made with LibGDX. To try it out, please go to the [releases](https://github.com/ThomasdenH/TrafficSimulation/releases).
 
 #License
 

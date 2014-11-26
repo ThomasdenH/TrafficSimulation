@@ -321,18 +321,18 @@ public class SettingsScreen implements Screen {
     TextButton generatePresetButton(final Presets.Preset preset) {
 
         String text = preset.getName() + ":\n\n" +
-                "Number of cars: " + preset.getSettings().getNumberOfCars() + "\n" +
-                "Number of lanes: " + preset.getSettings().getNumberOfLanes() + "\n" +
-                "Road length: " + preset.getSettings().getRoadLength() + "\n" +
-                "Initial fluctuation: " + preset.getSettings().getInitialFluctuation() + "\n" +
-                "Maximum acceleration: " + preset.getSettings().getAccelerationA() + "\n" +
-                "Desired deceleration: " + preset.getSettings().getDecelerationB() + "\n" +
-                "Time headway: " + preset.getSettings().getT() + "\n" +
-                "Acceleration exponent: " + preset.getSettings().getDelta() + "\n" +
-                "Maximum speed: " + preset.getSettings().getMaxSpeed() + "\n" +
-                "Simulations per second: " + preset.getSettings().getSimulationsPerSecond() + "\n" +
-                "Minimum distance S0: " + preset.getSettings().getJamDistanceSZero() + "\n" +
-                "Minimum distance S1: " + preset.getSettings().getJamDistanceSOne() + "\n";
+                "Number of cars: " + Math.round(preset.getSettings().getNumberOfCars()) + "\n" +
+                "Number of lanes: " + Math.round(preset.getSettings().getNumberOfLanes()) + "\n" +
+                "Road length: " + Math.round(preset.getSettings().getRoadLength()) + "\n" +
+                "Initial fluctuation: " + Math.round(preset.getSettings().getInitialFluctuation() * 100f) / 100f + "\n" +
+                "Maximum acceleration: " + Math.round(preset.getSettings().getAccelerationA() * 100f) / 100f + "\n" +
+                "Desired deceleration: " + Math.round(preset.getSettings().getDecelerationB() * 100f) / 100f + "\n" +
+                "Time headway: " + Math.round(preset.getSettings().getT() * 10f) / 10f + "\n" +
+                "Acceleration exponent: " + Math.round(preset.getSettings().getDelta() * 10f) / 10f + "\n" +
+                "Maximum speed: " + Math.round(preset.getSettings().getMaxSpeed()) + "\n" +
+                "Simulations per second: " + Math.round(preset.getSettings().getSimulationsPerSecond()) + "\n" +
+                "Minimum distance S0: " + Math.round(preset.getSettings().getJamDistanceSZero() * 10f) / 10f + "\n" +
+                "Minimum distance S1: " + Math.round(preset.getSettings().getJamDistanceSOne() * 10f) / 10f + "\n";
 
         TextButton textButton = new TextButton(text, uiSkin);
         textButton.addListener(new ClickListener() {
