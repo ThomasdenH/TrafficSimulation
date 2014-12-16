@@ -63,9 +63,9 @@ public class SettingsScreen implements Screen {
         mainTable.setPosition(0, 0);
     }
 
-    Table simSettings;
-    Table presets;
-    Table appearance;
+    Table simulationSettingsTable;
+    Table presetsTable;
+    Table appearanceTable;
 
     Table mainTable;
 
@@ -85,9 +85,9 @@ public class SettingsScreen implements Screen {
         stage = new Stage(new ExtendViewport(minWidth, minHeight));
         Gdx.input.setInputProcessor(stage);
 
-        simSettings = getnerateSimSettings(stage.getWidth(), stage.getHeight());
-        presets = generatePresets(stage.getWidth(), stage.getHeight());
-        appearance = generateAppearance(stage.getWidth(), stage.getHeight());
+        simulationSettingsTable = generateSimulationSettingsTable(stage.getWidth(), stage.getHeight());
+        presetsTable = generatePresetsTable(stage.getWidth(), stage.getHeight());
+        appearanceTable = generateAppearanceTable(stage.getWidth(), stage.getHeight());
 
         mainTable = new Table();
         mainTable.setSize(stage.getWidth(), stage.getHeight());
@@ -102,11 +102,11 @@ public class SettingsScreen implements Screen {
                         case PRESET:
                             break;
                         case SIMULATION:
-                            mainTable.getCell(simSettings).setActor(presets);
+                            mainTable.getCell(simulationSettingsTable).setActor(presetsTable);
                             currentVisible = PRESET;
                             break;
                         case APPEARANCE:
-                            mainTable.getCell(appearance).setActor(presets);
+                            mainTable.getCell(appearanceTable).setActor(presetsTable);
                             currentVisible = PRESET;
                             break;
                     }
@@ -119,14 +119,14 @@ public class SettingsScreen implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     switch (currentVisible) {
                         case PRESET:
-                            mainTable.getCell(presets).setActor(simSettings);
+                            mainTable.getCell(presetsTable).setActor(simulationSettingsTable);
                             currentVisible = SIMULATION;
                             System.out.println("SIMULATION");
                             break;
                         case SIMULATION:
                             break;
                         case APPEARANCE:
-                            mainTable.getCell(appearance).setActor(simSettings);
+                            mainTable.getCell(appearanceTable).setActor(simulationSettingsTable);
                             currentVisible = SIMULATION;
                             break;
                     }
@@ -139,11 +139,11 @@ public class SettingsScreen implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     switch (currentVisible) {
                         case PRESET:
-                            mainTable.getCell(presets).setActor(appearance);
+                            mainTable.getCell(presetsTable).setActor(appearanceTable);
                             currentVisible = APPEARANCE;
                             break;
                         case SIMULATION:
-                            mainTable.getCell(simSettings).setActor(appearance);
+                            mainTable.getCell(simulationSettingsTable).setActor(appearanceTable);
                             currentVisible = APPEARANCE;
                             break;
                         case APPEARANCE:
@@ -154,7 +154,7 @@ public class SettingsScreen implements Screen {
         }});
         mainTable.add(categoryGroup).row();
 
-        mainTable.add(presets).row();
+        mainTable.add(presetsTable).height(Value.percentHeight(0.9f, mainTable)).width(Value.maxWidth).row();
 
         HorizontalGroup group = new HorizontalGroup();
         TextButton button = new TextButton("Save & close", uiSkin);
@@ -202,7 +202,7 @@ public class SettingsScreen implements Screen {
         stage.dispose();
     }
 
-    Table generateAppearance(float width, float height) {
+    Table generateAppearanceTable(float width, float height) {
         Table table = new Table();
         table.setSize(width, height);
         addSetting(table, "Number of lanes", 1, 15, 1, callbacks, new SettingObtainer() {
@@ -219,18 +219,18 @@ public class SettingsScreen implements Screen {
         return table;
     }
 
-    Table generatePresets(float width, float height) {
+    Table generatePresetsTable(float width, float height) {
         Table table = new Table();
         table.setSize(width, height);
         for (int x = 0; x < Presets.defaultPresets.length; x++) {
-            table.add(generatePresetButton(Presets.defaultPresets[x])).width(width / Presets.defaultPresets.length).width(Value.percentWidth(0.3f, table));
+            table.add(generatePresetButton(Presets.defaultPresets[x]));
             if (x == Presets.defaultPresets.length / 2)
                 table.row();
         }
         return table;
     }
 
-    Table getnerateSimSettings(float width, float height) {
+    Table generateSimulationSettingsTable(float width, float height) {
         Table simSettings = new Table(uiSkin);
         simSettings.setSize(width, height);
         addSetting(simSettings, "Number of cars", 0, 1000, 1f, callbacks, new SettingObtainer() {
