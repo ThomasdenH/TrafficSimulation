@@ -442,6 +442,7 @@ public class SettingsScreen implements Screen {
                 "Acceleration exponent: " + Math.round(preset.getSettings().getDelta() * 10f) / 10f + "\n" +
                 "Maximum speed: " + Math.round(preset.getSettings().getMaxSpeed()) + "\n" +
                 "Simulations per second: " + Math.round(preset.getSettings().getSimulationsPerSecond()) + "\n" +
+                "Time multiplier: " + Math.round(preset.getSettings().getSpeedMultiplier() * 10f) / 10f + "\n" +
                 "Minimum distance S0: " + Math.round(preset.getSettings().getJamDistanceSZero() * 10f) / 10f + "\n" +
                 "Minimum distance S1: " + Math.round(preset.getSettings().getJamDistanceSOne() * 10f) / 10f + "\n";
 

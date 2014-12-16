@@ -1,6 +1,5 @@
 package com.thomasdh.trafficsimulation.simulation;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -95,49 +94,54 @@ public class FollowTheLeaderSimulation {
     float maxspeed;
     float minspeed;
 
+    long simulationTime;
+    long realTime;
+
     public void simulate(float delta) {
-        if (running) {
-            time += settings.getSimulationTickTime();
 
-            meanSpeed = 0f;
-            standardDeviation = 0f;
-            maxspeed = 0f;
-            minspeed = Float.MAX_VALUE;
+        realTime += delta * 1000f;
 
-            for (int x = 0; x < settings.getNumberOfCars(); x++) {
-                FollowTheLeaderCar thisOne = cars.get(x);
-                thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime()));
-                thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * settings.getSimulationTickTime()) % settings.getRoadLength());
-                meanSpeed += thisOne.getSpeed() / settings.getNumberOfCars();
-                maxspeed = Math.max(thisOne.getSpeed(), maxspeed);
-                minspeed = Math.min(thisOne.getSpeed(), minspeed);
-            }
-            for (int x = 0; x < settings.getNumberOfCars(); x++) {
-                FollowTheLeaderCar thisOne = cars.get(x);
-                FollowTheLeaderCar nextOne = cars.get((x + 1) % settings.getNumberOfCars());
+        System.out.println(realTime + ", " + simulationTime);
 
-                float positionDifference = (float) (nextOne.getPosition() - nextOne.getRealWidth() - thisOne.getPosition());
-                if (positionDifference < 0) {
-                    positionDifference += settings.getRoadLength();
+        while (realTime > simulationTime + 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier()) {
+            simulationTime += 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier();
+            if (running) {
+                time += settings.getSimulationTickTime();
+
+                meanSpeed = 0f;
+                standardDeviation = 0f;
+                maxspeed = 0f;
+                minspeed = Float.MAX_VALUE;
+
+                for (int x = 0; x < settings.getNumberOfCars(); x++) {
+                    FollowTheLeaderCar thisOne = cars.get(x);
+                    thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime()));
+                    thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * settings.getSimulationTickTime()) % settings.getRoadLength());
+                    meanSpeed += thisOne.getSpeed() / settings.getNumberOfCars();
+                    maxspeed = Math.max(thisOne.getSpeed(), maxspeed);
+                    minspeed = Math.min(thisOne.getSpeed(), minspeed);
+                }
+                for (int x = 0; x < settings.getNumberOfCars(); x++) {
+                    FollowTheLeaderCar thisOne = cars.get(x);
+                    FollowTheLeaderCar nextOne = cars.get((x + 1) % settings.getNumberOfCars());
+
+                    float positionDifference = (float) (nextOne.getPosition() - nextOne.getRealWidth() - thisOne.getPosition());
+                    if (positionDifference < 0) {
+                        positionDifference += settings.getRoadLength();
+                    }
+
+                    float firstPart = (float) Math.pow(thisOne.getSpeed() / settings.getMaxSpeed(), settings.getDelta());
+                    float secondPart = (float) Math.pow(
+                            getWantedDistance(thisOne.getSpeed(), thisOne.getSpeed() - nextOne.getSpeed())
+                                    / positionDifference,
+                            2f);
+
+                    thisOne.setAcceleration(settings.getAccelerationA() * (1f - firstPart - secondPart));
+
+                    standardDeviation += Math.pow(thisOne.getSpeed() - meanSpeed, 2);
                 }
 
-                float firstPart = (float) Math.pow(thisOne.getSpeed() / settings.getMaxSpeed(), settings.getDelta());
-                float secondPart = (float) Math.pow(
-                        getWantedDistance(thisOne.getSpeed(), thisOne.getSpeed() - nextOne.getSpeed())
-                                / positionDifference,
-                        2f);
-
-                thisOne.setAcceleration(settings.getAccelerationA() * (1f - firstPart - secondPart));
-
-                standardDeviation += Math.pow(thisOne.getSpeed() - meanSpeed, 2);
-            }
-
-            standardDeviation = (float) Math.sqrt(standardDeviation / settings.getNumberOfCars());
-
-            try {
-                Thread.sleep(Math.max(0, (long) ((settings.getTickTime() - Gdx.graphics.getDeltaTime()) / settings.getSpeedMultiplier() * 1000f)));
-            } catch (Exception e) {
-                e.printStackTrace();
+                standardDeviation = (float) Math.sqrt(standardDeviation / settings.getNumberOfCars());
             }
         }
     }
