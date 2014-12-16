@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -56,8 +58,20 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height);
+        stage.getViewport().update(width, height, true);
+        mainTable.setSize(stage.getWidth(), stage.getHeight());
+        mainTable.setPosition(0, 0);
     }
+
+    Table simSettings;
+    Table presets;
+    Table appearance;
+
+    Table mainTable;
+
+    int currentVisible = 0;
+    final int PRESET = 0, SIMULATION = 1, APPEARANCE = 2;
+
 
     @Override
     public void show() {
@@ -71,144 +85,78 @@ public class SettingsScreen implements Screen {
         stage = new Stage(new ExtendViewport(minWidth, minHeight));
         Gdx.input.setInputProcessor(stage);
 
-        Table table = new Table(uiSkin);
-        table.setSize(stage.getWidth(), stage.getHeight());
-        table.setPosition(0, 0);
+        simSettings = getnerateSimSettings(stage.getWidth(), stage.getHeight());
+        presets = generatePresets(stage.getWidth(), stage.getHeight());
+        appearance = generateAppearance(stage.getWidth(), stage.getHeight());
 
-        addSetting(table, "Number of cars", 0, 1000, 1f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getNumberOfCars();
-            }
+        mainTable = new Table();
+        mainTable.setSize(stage.getWidth(), stage.getHeight());
+        mainTable.setPosition(0, 0);
 
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setNumberOfCars(Math.round(setting));
-            }
-        });
-        addSetting(table, "Number of lanes", 1, 15, 1, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getNumberOfLanes();
-            }
+        final HorizontalGroup categoryGroup = new HorizontalGroup();
+        categoryGroup.addActor(new TextButton("Presets", uiSkin) {{
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    switch (currentVisible) {
+                        case PRESET:
+                            break;
+                        case SIMULATION:
+                            mainTable.getCell(simSettings).setActor(presets);
+                            currentVisible = PRESET;
+                            break;
+                        case APPEARANCE:
+                            mainTable.getCell(appearance).setActor(presets);
+                            currentVisible = PRESET;
+                            break;
+                    }
+                }
+            });
+        }});
+        categoryGroup.addActor(new TextButton("Simulation", uiSkin) {{
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    switch (currentVisible) {
+                        case PRESET:
+                            mainTable.getCell(presets).setActor(simSettings);
+                            currentVisible = SIMULATION;
+                            System.out.println("SIMULATION");
+                            break;
+                        case SIMULATION:
+                            break;
+                        case APPEARANCE:
+                            mainTable.getCell(appearance).setActor(simSettings);
+                            currentVisible = SIMULATION;
+                            break;
+                    }
+                }
+            });
+        }});
+        categoryGroup.addActor(new TextButton("Appearance", uiSkin) {{
+            addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    switch (currentVisible) {
+                        case PRESET:
+                            mainTable.getCell(presets).setActor(appearance);
+                            currentVisible = APPEARANCE;
+                            break;
+                        case SIMULATION:
+                            mainTable.getCell(simSettings).setActor(appearance);
+                            currentVisible = APPEARANCE;
+                            break;
+                        case APPEARANCE:
+                            break;
+                    }
+                }
+            });
+        }});
+        mainTable.add(categoryGroup).row();
 
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setNumberOfLanes(Math.round(setting));
-            }
-        });
-        addSetting(table, "Road length (m)", 0f, 10000f, 100f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getRoadLength();
-            }
+        mainTable.add(presets).row();
 
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setRoadLength(setting);
-            }
-        });
-        addSetting(table, "Initial fluctuation (m)", 0, 5, 0.05f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getInitialFluctuation();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setInitialFluctuation(setting);
-            }
-        });
-        addSetting(table, "Maximum acceleration (m/s^2)", 0f, 3f, 0.01f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getAccelerationA();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setAccelerationA(setting);
-            }
-        });
-        addSetting(table, "Desired deceleration (m/s^2)", 0f, 3f, 0.01f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getDecelerationB();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setDecelerationB(setting);
-            }
-        });
-        addSetting(table, "Time headway (s)", 0f, 2.5f, 0.1f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getT();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setT(setting);
-            }
-        });
-        addSetting(table, "Acceleration exponent", 0f, 6f, 0.2f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getDelta();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setDelta(setting);
-            }
-        });
-        addSetting(table, "Maximum speed (m/s)", 0f, 200f, 10f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getMaxSpeed();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setMaxSpeed(setting);
-            }
-        });
-        addSetting(table, "Simulations per second (/s)", 1, 50, 1, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getSimulationsPerSecond();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setSimulationsPerSecond(Math.round(setting));
-            }
-        });
-        addSetting(table, "Minimum distance S0 (m)", 0.5f, 10f, 0.5f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getJamDistanceSZero();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setJamDistanceSZero(setting);
-            }
-        });
-        addSetting(table, "Minimum distance S1 (m)", 0f, 100f, 0.5f, callbacks, new SettingObtainer() {
-            @Override
-            public float getSetting() {
-                return getSettings().getJamDistanceSOne();
-            }
-
-            @Override
-            public void setSetting(float setting) {
-                getSettings().setJamDistanceSOne(setting);
-            }
-        });
-
-
+        HorizontalGroup group = new HorizontalGroup();
         TextButton button = new TextButton("Save & close", uiSkin);
         button.addListener(new ClickListener() {
             @Override
@@ -217,7 +165,7 @@ public class SettingsScreen implements Screen {
                 main.setScreen(TrafficSimulationMain.SCREEN_SIMULATION);
             }
         });
-        table.add(button);
+        group.addActor(button);
 
         TextButton button3 = new TextButton("Cancel", uiSkin);
         button3.addListener(new ClickListener() {
@@ -226,13 +174,10 @@ public class SettingsScreen implements Screen {
                 main.setScreen(TrafficSimulationMain.SCREEN_SIMULATION);
             }
         });
-        table.add(button3);
-        table.row();
-        for (Presets.Preset preset : Presets.defaultPresets) {
-            table.add(generatePresetButton(preset));
-        }
+        group.addActor(button3);
+        mainTable.add(group);
 
-        stage.addActor(table);
+        stage.addActor(mainTable);
 
 
     }
@@ -257,6 +202,172 @@ public class SettingsScreen implements Screen {
         stage.dispose();
     }
 
+    Table generateAppearance(float width, float height) {
+        Table table = new Table();
+        table.setSize(width, height);
+        addSetting(table, "Number of lanes", 1, 15, 1, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getNumberOfLanes();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setNumberOfLanes(Math.round(setting));
+            }
+        });
+        return table;
+    }
+
+    Table generatePresets(float width, float height) {
+        Table table = new Table();
+        table.setSize(width, height);
+        for (int x = 0; x < Presets.defaultPresets.length; x++) {
+            table.add(generatePresetButton(Presets.defaultPresets[x])).width(width / Presets.defaultPresets.length).width(Value.percentWidth(0.3f, table));
+            if (x == Presets.defaultPresets.length / 2)
+                table.row();
+        }
+        return table;
+    }
+
+    Table getnerateSimSettings(float width, float height) {
+        Table simSettings = new Table(uiSkin);
+        simSettings.setSize(width, height);
+        addSetting(simSettings, "Number of cars", 0, 1000, 1f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getNumberOfCars();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setNumberOfCars(Math.round(setting));
+            }
+        });
+        addSetting(simSettings, "Road length (m)", 0f, 10000f, 100f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getRoadLength();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setRoadLength(setting);
+            }
+        });
+        addSetting(simSettings, "Initial fluctuation (m)", 0, 5, 0.05f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getInitialFluctuation();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setInitialFluctuation(setting);
+            }
+        });
+        addSetting(simSettings, "Maximum acceleration (m/s^2)", 0f, 3f, 0.01f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getAccelerationA();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setAccelerationA(setting);
+            }
+        });
+        addSetting(simSettings, "Desired deceleration (m/s^2)", 0f, 3f, 0.01f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getDecelerationB();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setDecelerationB(setting);
+            }
+        });
+        addSetting(simSettings, "Time headway (s)", 0f, 2.5f, 0.1f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getT();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setT(setting);
+            }
+        });
+        addSetting(simSettings, "Acceleration exponent", 0f, 6f, 0.2f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getDelta();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setDelta(setting);
+            }
+        });
+        addSetting(simSettings, "Maximum speed (m/s)", 0f, 200f, 10f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getMaxSpeed();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setMaxSpeed(setting);
+            }
+        });
+        addSetting(simSettings, "Simulations per second (/s)", 1, 50, 1, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getSimulationsPerSecond();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setSimulationsPerSecond(Math.round(setting));
+            }
+        });
+        addSetting(simSettings, "Time multiplier", 0.5f, 10f, 0.5f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getSpeedMultiplier();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setSpeedMultiplier(setting);
+            }
+        });
+        addSetting(simSettings, "Minimum distance S0 (m)", 0.5f, 10f, 0.5f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getJamDistanceSZero();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setJamDistanceSZero(setting);
+            }
+        });
+        addSetting(simSettings, "Minimum distance S1 (m)", 0f, 100f, 0.5f, callbacks, new SettingObtainer() {
+            @Override
+            public float getSetting() {
+                return getSettings().getJamDistanceSOne();
+            }
+
+            @Override
+            public void setSetting(float setting) {
+                getSettings().setJamDistanceSOne(setting);
+            }
+        });
+        return simSettings;
+    }
+
     private ArrayList<ValueUpdateCallback> callbacks;
 
     void addSetting(Table table, final String name, final float min, final float max, final float step, ArrayList<ValueUpdateCallback> callbacks, final SettingObtainer obtainer) {
@@ -274,7 +385,7 @@ public class SettingsScreen implements Screen {
         sliderA.setValue(obtainer.getSetting());
         table.add(sliderA);
 
-        TextButton addButton = new TextButton("+", uiSkin);
+        TextButton addButton = new TextButton(" + ", uiSkin);
         addButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -286,7 +397,7 @@ public class SettingsScreen implements Screen {
         });
         table.add(addButton);
 
-        TextButton subtractButton = new TextButton("-", uiSkin);
+        TextButton subtractButton = new TextButton(" - ", uiSkin);
         subtractButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

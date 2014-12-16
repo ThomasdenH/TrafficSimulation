@@ -80,6 +80,8 @@ public class FollowTheLeaderSimulation {
         setRunning(false);
         System.out.println("Starting simulation");
 
+        time = 0;
+
         this.settings = settings;
 
         cars = new ArrayList<FollowTheLeaderCar>();
@@ -89,16 +91,26 @@ public class FollowTheLeaderSimulation {
         cars.get(settings.getNumberOfCars() / 2).setPosition(cars.get(settings.getNumberOfCars() / 2).getPosition() + settings.getInitialFluctuation());
     }
 
+    float time;
+    float maxspeed;
+    float minspeed;
+
     public void simulate(float delta) {
         if (running) {
+            time += settings.getSimulationTickTime();
+
             meanSpeed = 0f;
             standardDeviation = 0f;
+            maxspeed = 0f;
+            minspeed = Float.MAX_VALUE;
 
             for (int x = 0; x < settings.getNumberOfCars(); x++) {
                 FollowTheLeaderCar thisOne = cars.get(x);
                 thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime()));
                 thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * settings.getSimulationTickTime()) % settings.getRoadLength());
                 meanSpeed += thisOne.getSpeed() / settings.getNumberOfCars();
+                maxspeed = Math.max(thisOne.getSpeed(), maxspeed);
+                minspeed = Math.min(thisOne.getSpeed(), minspeed);
             }
             for (int x = 0; x < settings.getNumberOfCars(); x++) {
                 FollowTheLeaderCar thisOne = cars.get(x);
@@ -123,7 +135,7 @@ public class FollowTheLeaderSimulation {
             standardDeviation = (float) Math.sqrt(standardDeviation / settings.getNumberOfCars());
 
             try {
-                Thread.sleep(Math.max(0, (long) (settings.getTickTime() - Gdx.graphics.getDeltaTime())));
+                Thread.sleep(Math.max(0, (long) ((settings.getTickTime() - Gdx.graphics.getDeltaTime()) / settings.getSpeedMultiplier() * 1000f)));
             } catch (Exception e) {
                 e.printStackTrace();
             }

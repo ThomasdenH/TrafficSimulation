@@ -167,6 +167,6 @@ public class SimulationSettings implements Serializable {
     }
 
     public float getTickTime() {
-        return 1f / getSimulationsPerSecond() * speedMultiplier;
+        return 1f / getSimulationsPerSecond();
     }
 }

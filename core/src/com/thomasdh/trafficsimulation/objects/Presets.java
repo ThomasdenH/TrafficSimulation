@@ -28,7 +28,7 @@ public class Presets {
                 setRoadLength(1000);
                 setNumberOfCars(150);
                 setSimulationsPerSecond(30);
-                setSpeedMultiplier(1);
+                setSpeedMultiplier(1000);
                 setNumberOfLanes(8);
                 setJamDistanceSZero(2);
                 setJamDistanceSOne(0);
@@ -90,6 +90,23 @@ public class Presets {
                 setDelta(4f);
                 setLaneWidth(3);
                 setInitialFluctuation(2f);
+            }}),
+
+            new Preset("Test", new SimulationSettings(){{
+                setRoadLength(200);
+                setNumberOfCars(22);
+                setSimulationsPerSecond(2);
+                setSpeedMultiplier(1);
+                setNumberOfLanes(4);
+                setJamDistanceSZero(2);
+                setJamDistanceSOne(0);
+                setAccelerationA(1f);
+                setDecelerationB(2f);
+                setMaxSpeed(10);
+                setT(1f);
+                setDelta(4f);
+                setLaneWidth(3);
+                setInitialFluctuation(1f);
             }})
     };
 
