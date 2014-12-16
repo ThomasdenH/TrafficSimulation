@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import java.io.Serializable;
 
 /**
- * Created by Thomas on 14-11-2014 in project TrafficSimulation.
+ * Created by Thomas on 14-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
  */
 public class FollowTheLeaderCar implements Serializable {
     private float position;
@@ -15,16 +15,6 @@ public class FollowTheLeaderCar implements Serializable {
     private final int numberOfLanes;
     private final float screenWidth;
     private final float screenHeight;
-
-    public int getRound() {
-        return round;
-    }
-
-    public void setRound(int round) {
-        this.round = round;
-    }
-
-    private int round = 0;
 
     public float getPosition() {
         return position;
@@ -50,9 +40,9 @@ public class FollowTheLeaderCar implements Serializable {
         this.acceleration = acceleration;
     }
 
-    public FollowTheLeaderCar(float screenWidth, float screenHeight, float position, float speed, int numberOfLanes, float laneLength) {
+    public FollowTheLeaderCar(float screenWidth, float screenHeight, float position, int numberOfLanes, float laneLength) {
         this.position = position;
-        this.speed = speed;
+        this.speed = 0f;
         this.numberOfLanes = numberOfLanes;
         this.laneLength = laneLength;
         this.screenHeight = screenHeight;

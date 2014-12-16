@@ -12,7 +12,7 @@ import com.thomasdh.trafficsimulation.storage.ProgressSaver;
 import java.util.ArrayList;
 
 /**
- * Created by Thomas on 14-11-2014 in project TrafficSimulation.
+ * Created by Thomas on 14-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
  */
 public class FollowTheLeaderSimulation {
 
@@ -79,47 +79,40 @@ public class FollowTheLeaderSimulation {
         setRunning(false);
         System.out.println("Starting simulation");
 
-        time = 0;
-
         this.settings = settings;
 
         cars = new ArrayList<FollowTheLeaderCar>();
         for (int x = 0; x < settings.getNumberOfCars(); x++) {
-            cars.add(new FollowTheLeaderCar(screenWidth, screenHeight, settings.getRoadLength() / settings.getNumberOfCars() * x, 0f, settings.getNumberOfLanes(), settings.getLaneLength()));
+            cars.add(new FollowTheLeaderCar(screenWidth, screenHeight, settings.getRoadLength() / settings.getNumberOfCars() * x, settings.getNumberOfLanes(), settings.getLaneLength()));
         }
         cars.get(settings.getNumberOfCars() / 2).setPosition(cars.get(settings.getNumberOfCars() / 2).getPosition() + settings.getInitialFluctuation());
     }
 
-    float time;
-    float maxspeed;
-    float minspeed;
+    private long simulationTime;
+    private long realTime;
 
-    long simulationTime;
-    long realTime;
+    final long maximumFrameTimeMS = 1000;
 
     public void simulate(float delta) {
 
+        long frameStartTime = System.currentTimeMillis();
         realTime += delta * 1000f;
 
-        System.out.println(realTime + ", " + simulationTime);
+        while (realTime > simulationTime + 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier()
+                && System.currentTimeMillis() - frameStartTime < maximumFrameTimeMS) {
 
-        while (realTime > simulationTime + 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier()) {
             simulationTime += 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier();
+
             if (running) {
-                time += settings.getSimulationTickTime();
 
                 meanSpeed = 0f;
                 standardDeviation = 0f;
-                maxspeed = 0f;
-                minspeed = Float.MAX_VALUE;
 
                 for (int x = 0; x < settings.getNumberOfCars(); x++) {
                     FollowTheLeaderCar thisOne = cars.get(x);
                     thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime()));
                     thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * settings.getSimulationTickTime()) % settings.getRoadLength());
                     meanSpeed += thisOne.getSpeed() / settings.getNumberOfCars();
-                    maxspeed = Math.max(thisOne.getSpeed(), maxspeed);
-                    minspeed = Math.min(thisOne.getSpeed(), minspeed);
                 }
                 for (int x = 0; x < settings.getNumberOfCars(); x++) {
                     FollowTheLeaderCar thisOne = cars.get(x);

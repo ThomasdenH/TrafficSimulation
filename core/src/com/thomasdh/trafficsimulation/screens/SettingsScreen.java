@@ -23,18 +23,20 @@ import com.thomasdh.trafficsimulation.objects.SimulationSettings;
 import java.util.ArrayList;
 
 /**
- * Created by Thomas on 19-11-2014 in project TrafficSimulation.
+ * Created by Thomas on 19-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
  */
 public class SettingsScreen implements Screen {
 
     private final TrafficSimulationMain main;
 
     private Stage stage;
+    @SuppressWarnings("FieldCanBeLocal")
     private final float minWidth = 700f;
+    @SuppressWarnings("FieldCanBeLocal")
     private final float minHeight = 700f;
     private Skin uiSkin;
 
-    public SimulationSettings getSettings() {
+    SimulationSettings getSettings() {
         return settings;
     }
 
@@ -63,14 +65,16 @@ public class SettingsScreen implements Screen {
         mainTable.setPosition(0, 0);
     }
 
-    Table simulationSettingsTable;
-    Table presetsTable;
-    Table appearanceTable;
+    private Table simulationSettingsTable;
+    private Table presetsTable;
+    private Table appearanceTable;
 
-    Table mainTable;
+    private Table mainTable;
 
-    int currentVisible = 0;
-    final int PRESET = 0, SIMULATION = 1, APPEARANCE = 2;
+    private int currentVisible = 0;
+    private final int PRESET = 0;
+    private final int SIMULATION = 1;
+    private final int APPEARANCE = 2;
 
 
     @Override

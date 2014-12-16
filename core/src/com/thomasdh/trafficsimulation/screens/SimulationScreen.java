@@ -16,7 +16,7 @@ import com.thomasdh.trafficsimulation.objects.Presets;
 import com.thomasdh.trafficsimulation.simulation.FollowTheLeaderSimulation;
 
 /**
- * Created by Thomas on 19-11-2014 in project TrafficSimulation.
+ * Created by Thomas on 19-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
  */
 public class SimulationScreen implements Screen {
 
@@ -24,7 +24,9 @@ public class SimulationScreen implements Screen {
 
     private Stage stage;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final float minWidth = 700f;
+    @SuppressWarnings("FieldCanBeLocal")
     private final float minHeight = 700f;
 
     private Skin uiSkin;

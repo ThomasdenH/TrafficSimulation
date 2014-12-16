@@ -1,7 +1,6 @@
 package com.thomasdh.trafficsimulation;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 import com.thomasdh.trafficsimulation.objects.SimulationSettings;
 import com.thomasdh.trafficsimulation.screens.SettingsScreen;
 import com.thomasdh.trafficsimulation.screens.SimulationScreen;

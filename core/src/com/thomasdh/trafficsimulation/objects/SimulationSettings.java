@@ -3,7 +3,7 @@ package com.thomasdh.trafficsimulation.objects;
 import java.io.Serializable;
 
 /**
- * Created by Thomas on 18-11-2014 in project TrafficSimulation.
+ * Created by Thomas on 18-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
  */
 public class SimulationSettings implements Serializable {
     private int numberOfCars;

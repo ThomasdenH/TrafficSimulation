@@ -1,7 +1,7 @@
 package com.thomasdh.trafficsimulation.objects;
 
 /**
- * Created by Thomas on 23-11-2014 in project TrafficSimulation.
+ * Created by Thomas on 23-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
  */
 public class Presets {
 
