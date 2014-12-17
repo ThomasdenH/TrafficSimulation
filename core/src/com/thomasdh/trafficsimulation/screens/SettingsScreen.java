@@ -159,6 +159,7 @@ public class SettingsScreen implements Screen {
         mainTable.add(categoryGroup).row();
 
         mainTable.add(presetsTable).height(Value.percentHeight(0.9f, mainTable)).width(Value.maxWidth).row();
+        currentVisible = PRESET;
 
         HorizontalGroup group = new HorizontalGroup();
         TextButton button = new TextButton("Save & close", uiSkin);
@@ -182,8 +183,6 @@ public class SettingsScreen implements Screen {
         mainTable.add(group);
 
         stage.addActor(mainTable);
-
-
     }
 
     @Override

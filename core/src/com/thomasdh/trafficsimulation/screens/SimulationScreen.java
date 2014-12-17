@@ -70,6 +70,7 @@ public class SimulationScreen implements Screen {
         simulation = new FollowTheLeaderSimulation(main.progressSaver);
         simulation.setSettings(main.getCurrentSettings());
         simulation.setup();
+
     }
 
     @Override

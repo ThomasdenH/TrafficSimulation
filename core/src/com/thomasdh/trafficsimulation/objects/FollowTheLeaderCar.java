@@ -75,6 +75,7 @@ public class FollowTheLeaderCar implements Serializable {
     }
 
     public Color getColor(float meanSpeed) {
+        meanSpeed += 0.001f;
         return new Color(1f - getSpeed() / meanSpeed, getSpeed() / meanSpeed, 0f, 1f);
     }
 }

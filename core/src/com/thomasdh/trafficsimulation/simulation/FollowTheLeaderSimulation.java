@@ -91,19 +91,20 @@ public class FollowTheLeaderSimulation {
     private long simulationTime;
     private long realTime;
 
-    final long maximumFrameTimeMS = 1000;
+    final long maximumFrameTimeMS = 20;
 
     public void simulate(float delta) {
 
-        long frameStartTime = System.currentTimeMillis();
-        realTime += delta * 1000f;
 
-        while (realTime > simulationTime + 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier()
-                && System.currentTimeMillis() - frameStartTime < maximumFrameTimeMS) {
+        if (running) {
 
-            simulationTime += 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier();
+            long frameStartTime = System.currentTimeMillis();
+            realTime += delta * 1000f;
 
-            if (running) {
+            while (realTime > simulationTime + 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier()
+                    && System.currentTimeMillis() - frameStartTime < maximumFrameTimeMS) {
+
+                simulationTime += 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier();
 
                 meanSpeed = 0f;
                 standardDeviation = 0f;
