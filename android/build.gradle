@@ -1,5 +1,7 @@
+import com.android.build.gradle.tasks.PackageApplication
+
 android {
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
     compileSdkVersion 21
     sourceSets {
         main {
@@ -16,7 +18,7 @@ android {
 }
 
 // needed to add JNI shared libraries to APK when compiling on CLI
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+tasks.withType(PackageApplication) { pkgTask ->
     pkgTask.jniFolders = new HashSet<File>()
     pkgTask.jniFolders.add(new File(projectDir, 'libs'))
 }

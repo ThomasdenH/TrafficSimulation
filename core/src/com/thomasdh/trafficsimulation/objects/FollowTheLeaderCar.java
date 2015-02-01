@@ -4,9 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 
 import java.io.Serializable;
 
-/**
- * Created by Thomas on 14-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
- */
 public class FollowTheLeaderCar implements Serializable {
     private float position;
     private float speed;
@@ -15,6 +12,8 @@ public class FollowTheLeaderCar implements Serializable {
     private final int numberOfLanes;
     private final float screenWidth;
     private final float screenHeight;
+
+    private static final double REAL_WIDTH = 4, REAL_HEIGHT = 2;
 
     public float getPosition() {
         return position;
@@ -50,11 +49,11 @@ public class FollowTheLeaderCar implements Serializable {
     }
 
     public double getRealWidth() {
-        return 4;
+        return REAL_WIDTH;
     }
 
     double getRealHeight() {
-        return 2;
+        return REAL_HEIGHT;
     }
 
     public double getScreenWidth() {

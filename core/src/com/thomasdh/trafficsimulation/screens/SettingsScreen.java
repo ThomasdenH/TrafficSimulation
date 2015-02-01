@@ -22,9 +22,6 @@ import com.thomasdh.trafficsimulation.objects.SimulationSettings;
 
 import java.util.ArrayList;
 
-/**
- * Created by Thomas on 19-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
- */
 public class SettingsScreen implements Screen {
 
     private final TrafficSimulationMain main;

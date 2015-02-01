@@ -11,9 +11,6 @@ import com.thomasdh.trafficsimulation.storage.ProgressSaver;
 
 import java.util.ArrayList;
 
-/**
- * Created by Thomas on 14-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
- */
 public class FollowTheLeaderSimulation {
 
     private final float screenWidth = 1;
@@ -39,16 +36,16 @@ public class FollowTheLeaderSimulation {
     private float meanSpeed;
     private float standardDeviation;
 
-    public boolean running = false;
+    private boolean running = false;
 
     public void setSettings(SimulationSettings settings) {
         this.settings = settings;
     }
 
     public void setup() {
-        shapeRenderer = new ShapeRenderer();
-        camera = new OrthographicCamera(screenWidth, screenHeight);
-        camera.translate(screenWidth / 2f, screenHeight / 2f);
+        setShapeRenderer(new ShapeRenderer());
+        setCamera(new OrthographicCamera(getScreenWidth(), getScreenHeight()));
+        getCamera().translate(getScreenWidth() / 2f, getScreenHeight() / 2f);
 
         setRunning(false);
         resumeSimulation();
@@ -61,17 +58,17 @@ public class FollowTheLeaderSimulation {
     void resumeSimulation() {
         System.out.println("Resuming simulation");
 
-        Progress progress = progressSaver.readProgress();
+        Progress progress = getProgressSaver().readProgress();
 
         if (progress == null) {
-            if (settings == null) {
+            if (getSettings() == null) {
                 startSimulation(Presets.defaultPresets[0].getSettings().copy());
             } else {
-                startSimulation(settings);
+                startSimulation(getSettings());
             }
         } else {
-            settings = progress.settings;
-            cars = progress.cars;
+            setSettings(progress.settings);
+            setCars(progress.cars);
         }
     }
 
@@ -79,91 +76,91 @@ public class FollowTheLeaderSimulation {
         setRunning(false);
         System.out.println("Starting simulation");
 
-        this.settings = settings;
+        this.setSettings(settings);
 
-        cars = new ArrayList<FollowTheLeaderCar>();
+        setCars(new ArrayList<FollowTheLeaderCar>());
         for (int x = 0; x < settings.getNumberOfCars(); x++) {
-            cars.add(new FollowTheLeaderCar(screenWidth, screenHeight, settings.getRoadLength() / settings.getNumberOfCars() * x, settings.getNumberOfLanes(), settings.getLaneLength()));
+            getCars().add(new FollowTheLeaderCar(getScreenWidth(), getScreenHeight(), settings.getRoadLength() / settings.getNumberOfCars() * x, settings.getNumberOfLanes(), settings.getLaneLength()));
         }
-        cars.get(settings.getNumberOfCars() / 2).setPosition(cars.get(settings.getNumberOfCars() / 2).getPosition() + settings.getInitialFluctuation());
+        getCars().get(settings.getNumberOfCars() / 2).setPosition(getCars().get(settings.getNumberOfCars() / 2).getPosition() + settings.getInitialFluctuation());
     }
 
     private long simulationTime;
     private long realTime;
 
-    final long maximumFrameTimeMS = 20;
+    private final long maximumFrameTimeMS = 20;
 
     public void simulate(float delta) {
 
 
-        if (running) {
+        if (isRunning()) {
 
             long frameStartTime = System.currentTimeMillis();
-            realTime += delta * 1000f;
+            setRealTime((long) (getRealTime() + delta * 1000f));
 
-            while (realTime > simulationTime + 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier()
-                    && System.currentTimeMillis() - frameStartTime < maximumFrameTimeMS) {
+            while (getRealTime() > getSimulationTime() + 1000f * getSettings().getSimulationTickTime() / getSettings().getSpeedMultiplier()
+                    && System.currentTimeMillis() - frameStartTime < getMaximumFrameTimeMS()) {
 
-                simulationTime += 1000f * settings.getSimulationTickTime() / settings.getSpeedMultiplier();
+                setSimulationTime((long) (getSimulationTime() + 1000f * getSettings().getSimulationTickTime() / getSettings().getSpeedMultiplier()));
 
-                meanSpeed = 0f;
-                standardDeviation = 0f;
+                setMeanSpeed(0f);
+                setStandardDeviation(0f);
 
-                for (int x = 0; x < settings.getNumberOfCars(); x++) {
-                    FollowTheLeaderCar thisOne = cars.get(x);
-                    thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * settings.getSimulationTickTime()));
-                    thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * settings.getSimulationTickTime()) % settings.getRoadLength());
-                    meanSpeed += thisOne.getSpeed() / settings.getNumberOfCars();
+                for (int x = 0; x < getSettings().getNumberOfCars(); x++) {
+                    FollowTheLeaderCar thisOne = getCars().get(x);
+                    thisOne.setSpeed(Math.max(0, thisOne.getSpeed() + thisOne.getAcceleration() * getSettings().getSimulationTickTime()));
+                    thisOne.setPosition((thisOne.getPosition() + thisOne.getSpeed() * getSettings().getSimulationTickTime()) % getSettings().getRoadLength());
+                    setMeanSpeed(getMeanSpeed() + thisOne.getSpeed() / getSettings().getNumberOfCars());
                 }
-                for (int x = 0; x < settings.getNumberOfCars(); x++) {
-                    FollowTheLeaderCar thisOne = cars.get(x);
-                    FollowTheLeaderCar nextOne = cars.get((x + 1) % settings.getNumberOfCars());
+                for (int x = 0; x < getSettings().getNumberOfCars(); x++) {
+                    FollowTheLeaderCar thisOne = getCars().get(x);
+                    FollowTheLeaderCar nextOne = getCars().get((x + 1) % getSettings().getNumberOfCars());
 
                     float positionDifference = (float) (nextOne.getPosition() - nextOne.getRealWidth() - thisOne.getPosition());
                     if (positionDifference < 0) {
-                        positionDifference += settings.getRoadLength();
+                        positionDifference += getSettings().getRoadLength();
                     }
 
-                    float firstPart = (float) Math.pow(thisOne.getSpeed() / settings.getMaxSpeed(), settings.getDelta());
+                    float firstPart = (float) Math.pow(thisOne.getSpeed() / getSettings().getMaxSpeed(), getSettings().getDelta());
                     float secondPart = (float) Math.pow(
                             getWantedDistance(thisOne.getSpeed(), thisOne.getSpeed() - nextOne.getSpeed())
                                     / positionDifference,
                             2f);
 
-                    thisOne.setAcceleration(settings.getAccelerationA() * (1f - firstPart - secondPart));
+                    thisOne.setAcceleration(getSettings().getAccelerationA() * (1f - firstPart - secondPart));
 
-                    standardDeviation += Math.pow(thisOne.getSpeed() - meanSpeed, 2);
+                    setStandardDeviation((float) (getStandardDeviation() + Math.pow(thisOne.getSpeed() - getMeanSpeed(), 2)));
                 }
 
-                standardDeviation = (float) Math.sqrt(standardDeviation / settings.getNumberOfCars());
+                setStandardDeviation((float) Math.sqrt(getStandardDeviation() / getSettings().getNumberOfCars()));
             }
         }
     }
 
     public void draw() {
-        camera.update();
-        shapeRenderer.setProjectionMatrix(camera.combined);
+        getCamera().update();
+        getShapeRenderer().setProjectionMatrix(getCamera().combined);
 
-        shapeRenderer.setColor(Color.GRAY);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        getShapeRenderer().setColor(Color.GRAY);
+        getShapeRenderer().begin(ShapeRenderer.ShapeType.Filled);
 
-        for (float x = 0; x < settings.getNumberOfLanes(); x++) {
-            shapeRenderer.rect(0, screenHeight / (float) (settings.getNumberOfLanes() + 1) * (x + 1) - settings.getScreenLaneWidth() / 2f, screenWidth, settings.getScreenLaneWidth());
+        for (float x = 0; x < getSettings().getNumberOfLanes(); x++) {
+            getShapeRenderer().rect(0, getScreenHeight() / (float) (getSettings().getNumberOfLanes() + 1) * (x + 1) - getSettings().getScreenLaneWidth() / 2f, getScreenWidth(), getSettings().getScreenLaneWidth());
         }
 
-        for (FollowTheLeaderCar car : cars) {
-            shapeRenderer.setColor(car.getColor(meanSpeed));
-            shapeRenderer.rect((float) car.getX(), (float) car.getY(), (float) car.getScreenWidth(), (float) car.getScreenHeight());
+        for (FollowTheLeaderCar car : getCars()) {
+            getShapeRenderer().setColor(car.getColor(getMeanSpeed()));
+            getShapeRenderer().rect((float) car.getX(), (float) car.getY(), (float) car.getScreenWidth(), (float) car.getScreenHeight());
         }
 
-        shapeRenderer.end();
+        getShapeRenderer().end();
     }
 
     public void finish() {
         Progress progress = new Progress();
-        progress.cars = cars;
-        progress.settings = settings;
-        progressSaver.saveProgress(progress);
+        progress.cars = getCars();
+        progress.settings = getSettings();
+        getProgressSaver().saveProgress(progress);
     }
 
     public float getMeanSpeed() {
@@ -177,15 +174,82 @@ public class FollowTheLeaderSimulation {
     float getWantedDistance(float speed, float speedDifference) {
         return (float) (
                 // Minimum distance
-                settings.getJamDistanceSZero() +
+                getSettings().getJamDistanceSZero() +
 
 
                         Math.max(0,
                                 // Zero in my simulation
-                                settings.getJamDistanceSOne() * Math.sqrt(speed / settings.getMaxSpeed()) +
-                                        settings.getT() * speed
+                                getSettings().getJamDistanceSOne() * Math.sqrt(speed / getSettings().getMaxSpeed()) +
+                                        getSettings().getT() * speed
 
-                                        + speed * speedDifference / (2f * Math.sqrt(settings.getAccelerationA() * settings.getDecelerationB()))));
+                                        + speed * speedDifference / (2f * Math.sqrt(getSettings().getAccelerationA() * getSettings().getDecelerationB()))));
     }
 
+    public float getScreenWidth() {
+        return screenWidth;
+    }
+
+    public float getScreenHeight() {
+        return screenHeight;
+    }
+
+    public ArrayList<FollowTheLeaderCar> getCars() {
+        return cars;
+    }
+
+    public void setCars(ArrayList<FollowTheLeaderCar> cars) {
+        this.cars = cars;
+    }
+
+    public ShapeRenderer getShapeRenderer() {
+        return shapeRenderer;
+    }
+
+    public void setShapeRenderer(ShapeRenderer shapeRenderer) {
+        this.shapeRenderer = shapeRenderer;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public ProgressSaver getProgressSaver() {
+        return progressSaver;
+    }
+
+    public void setMeanSpeed(float meanSpeed) {
+        this.meanSpeed = meanSpeed;
+    }
+
+    public void setStandardDeviation(float standardDeviation) {
+        this.standardDeviation = standardDeviation;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public long getSimulationTime() {
+        return simulationTime;
+    }
+
+    public void setSimulationTime(long simulationTime) {
+        this.simulationTime = simulationTime;
+    }
+
+    public long getRealTime() {
+        return realTime;
+    }
+
+    public void setRealTime(long realTime) {
+        this.realTime = realTime;
+    }
+
+    public long getMaximumFrameTimeMS() {
+        return maximumFrameTimeMS;
+    }
 }

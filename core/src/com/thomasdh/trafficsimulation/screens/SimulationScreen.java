@@ -15,9 +15,6 @@ import com.thomasdh.trafficsimulation.TrafficSimulationMain;
 import com.thomasdh.trafficsimulation.objects.Presets;
 import com.thomasdh.trafficsimulation.simulation.FollowTheLeaderSimulation;
 
-/**
- * Created by Thomas on 19-11-2014 in project TrafficSimulation in project ${PROJECT_NAME}.
- */
 public class SimulationScreen implements Screen {
 
     private FollowTheLeaderSimulation simulation;
@@ -125,7 +122,7 @@ public class SimulationScreen implements Screen {
         start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (simulation.running) {
+                if (simulation.isRunning()) {
                     simulation.setRunning(false);
                     start.setText("Start");
                 } else {
