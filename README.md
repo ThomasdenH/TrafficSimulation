@@ -1,8 +1,17 @@
 #TrafficSimulation
 
+##The program
 This is a simulation program I made with LibGDX. To try it out, please go to the [releases](https://github.com/ThomasdenH/TrafficSimulation/releases).
 
-#License
+The simulation is based on the [Intelligent Driver Model](https://en.wikipedia.org/wiki/Intelligent_driver_model). The program demonstrates that traffic jams can appear from small deviations in the positions of individual drivers.
+
+![Screenshot 1](http://i.imgur.com/lH9lDba.png)
+
+![Screenshot 2](http://i.imgur.com/izKtZd2.png)
+
+![Screenshot 3](http://i.imgur.com/AQMXard.png)
+
+##License
 
 This project is released under the Apache license. You can use it in any project, commercially or non-commerially.
 I'd like it if give me credit if you do use it in a project, but it is by no means necessary.
